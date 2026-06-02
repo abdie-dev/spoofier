@@ -66,7 +66,6 @@ def autoConfiguration():
         # Execute MAC address spoofing command on the target interface
         print("Starting spoofing MAC...")
         time.sleep(0.5)
-
         spoofingMACTarget = (
             f"nmcli device modify {TARGET} cloned-mac-address 00:11:22:33:44:55"
         )
@@ -84,9 +83,90 @@ def autoConfiguration():
         print(startingSpoof.stdout.strip(), "\n", startResetting.stdout.strip())
 
     elif captureInput == 2:
-        pass
+        # Perform network scan to identify active connections
+        print(f"{BIRU}scanning..{RESET}")
+        scan = subprocess.run(scanSyntax, shell=True, capture_output=True, text=True)
+        time.sleep(0.5)
+        outputScanTarget = scan.stdout.strip()
+        print(outputScanTarget, "\n")
+
+        # Extract the main active network interface name (target) from scan results
+        print("Choosing main internet device....")
+        time.sleep(0.5)
+        grepingTarget = subprocess.run(
+            grepingTargetName,
+            shell=True,
+            capture_output=True,
+            text=True,
+        )
+        TARGET = grepingTarget.stdout.strip()
+        print(f"{HIJAU}Target = {TARGET}{RESET}\n")
+
+        # Construct command to set static IP configuration (IPv4) for the target interface
+        spoofingIPTarget = f"nmcli connection modify {TARGET} ipv4.method manual ipv4.addresses 192.168.1.100/24 ipv4.gateway 192.168.1.1 ipv4.dns 1.1.1.1"
+        # Construct command to restart the network connection to apply changes
+        resettingNetwork = (
+            f'nmcli connection down "{TARGET}" && nmcli connection up "{TARGET}" '
+        )
+
+        # Proceed with IP address spoofing only
+
+        # Execute IP address spoofing command on the target interface
+        print("Starting Spoofing IP only...")
+        time.sleep(0.5)
+        startingSpoof = subprocess.run(
+            spoofingIPTarget, shell=True, capture_output=True, text=True
+        )
+
+        # Execute network reset command to apply changes
+        startResetting = subprocess.run(
+            resettingNetwork, shell=True, capture_output=True, text=True
+        )
+        # Display outputs of IP spoofing and network reset operations
+        print(startingSpoof.stdout.strip(), "\n", startResetting.stdout.strip())
     elif captureInput == 3:
-        pass
+        # Perform network scan to identify active connections
+        print(f"{BIRU}scanning..{RESET}")
+        scan = subprocess.run(scanSyntax, shell=True, capture_output=True, text=True)
+        time.sleep(0.5)
+        outputScanTarget = scan.stdout.strip()
+        print(outputScanTarget, "\n")
+
+        # Extract the main active network interface name (target) from scan results
+        print("Choosing main internet device....")
+        time.sleep(0.5)
+        grepingTarget = subprocess.run(
+            grepingTargetName,
+            shell=True,
+            capture_output=True,
+            text=True,
+        )
+        TARGET = grepingTarget.stdout.strip()
+        print(f"{HIJAU}Target = {TARGET}{RESET}\n")
+
+        # Construct command to restart the network connection to apply changes
+        resettingNetwork = (
+            f'nmcli connection down "{TARGET}" && nmcli connection up "{TARGET}" '
+        )
+
+        # Proceed with MAC address spoofing only
+
+        spoofingMACTarget = (
+            f"nmcli device modify {TARGET} cloned-mac-address 00:11:22:33:44:55"
+        )
+        # Execute MAC address spoofing command on the target interface
+        print("Starting spoofing MAC only...")
+        time.sleep(0.5)
+        startingSpoofMac = subprocess.run(
+            spoofingMACTarget, shell=True, capture_output=True, text=True
+        )
+
+        # Execute network reset command to apply changes
+        startResetting = subprocess.run(
+            resettingNetwork, shell=True, capture_output=True, text=True
+        )
+        # Display outputs of MAC spoofing and network reset operations
+        print(startingSpoofMac.stdout.strip(), "\n", startResetting.stdout.strip())
     else:
         print("Please check again your input!!")
 
@@ -118,4 +198,3 @@ if __name__ == "__main__":
         case 4:
             scanNetwork()
     pass
-
