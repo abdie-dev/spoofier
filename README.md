@@ -1,4 +1,4 @@
-# Spoofing Tool by biww
+# Spoofing Tool by biww ( on Development )
 
 Tool untuk melakukan **IP dan MAC address spoofing** pada jaringan menggunakan `nmcli` (NetworkManager). Tool ini menyediakan mode **Auto Configure** dan **Manual Configure** untuk mengubah konfigurasi interface jaringan.
 
